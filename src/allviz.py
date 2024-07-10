@@ -1,5 +1,6 @@
 import random
 import itertools
+from typing import TypeVar
 
 # The simulator is the core of the model
 def create_simulator():
@@ -7,7 +8,7 @@ def create_simulator():
 
 
 class Simulator:
-    # A dictonary of actorIDs and their components
+    # A dictonary of componsnts and then actors
     actors = {}
 
     # A list of systems to run in a simulation step.
@@ -22,14 +23,12 @@ class Simulator:
         id = next(self.id_counter)
         return id
 
-    def add_component(self, actor_id, component):
+    def add_component(self, actor_id, component, component_instance = None):
 
         if component.__allviz_component_id__ not in self.actors:
             self.actors[component.__allviz_component_id__] = {}
 
-        self.actors[component.__allviz_component_id__][actor_id] = component()
-
-        print(self.actors)
+        self.actors[component.__allviz_component_id__][actor_id] = component() if component_instance == None else component_instance
     
     def add_system(self, system):
 
@@ -41,6 +40,17 @@ class Simulator:
     def step(self):
         for system in self.systems:
             system(None)
+
+    # This function retuns (actor, component) for all actors with component
+    T = TypeVar('T')
+    def quary_component(self, component: T) -> list[tuple[int, T]]:
+        if not hasattr(component, "__allviz_component_id__"):
+            print("ERROR: Passed argument is not an allviz component!")
+
+        if component.__allviz_component_id__ not in self.actors:
+            return []
+        
+        return list(self.actors[component.__allviz_component_id__].items())
 
 # This decorator adds a uniqe int ID for each component
 def component(cls):

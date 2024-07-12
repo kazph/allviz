@@ -39,7 +39,7 @@ class Simulator:
     
     def step(self):
         for system in self.systems:
-            system(None)
+            system(self)
 
     # This function retuns (actor, component) for all actors with component
     T = TypeVar('T')

@@ -23,6 +23,10 @@ class Simulator:
         id = next(self.id_counter)
         return id
 
+    def remove_actor(self, actor_id):
+        for values in self.actors.values():
+            values.pop(actor_id)
+
     def add_component(self, actor_id, component, component_instance = None):
 
         if component.__allviz_component_id__ not in self.actors:

@@ -21,8 +21,7 @@ def main():
     simulator.add_system(analyze)
     simulator.add_system(reproduce)
 
-    for step in range(0, 5000):
-        simulator.step()
+    simulator.run(max_steps=5000)
 
 class Mode(Enum):
     ROCK = 0

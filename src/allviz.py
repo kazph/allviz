@@ -1,12 +1,13 @@
 import random
 import itertools
-from typing import TypeVar
+from typing import TypeVar, Callable, ForwardRef
 
 # The simulator is the core of the model
 def create_simulator():
     return Simulator()
 
 
+Simulator = ForwardRef("Simulator")
 class Simulator:
     # A dictonary of componsnts and then actors
     actors = {}
@@ -44,6 +45,12 @@ class Simulator:
     def step(self):
         for system in self.systems:
             system(self)
+    
+    def run(self, max_steps = None, end_condition: Callable[[Simulator], bool] = lambda x: False):
+        for i in range(0, min(max_steps, 1_000_000_000)): # Hand-coded max
+            if end_condition(self) == True:
+                break
+            self.step()
 
     # This function retuns (actor, component) for all actors with component
     T = TypeVar('T')

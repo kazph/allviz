@@ -1,4 +1,4 @@
-import random
+import uuid
 import itertools
 from typing import Type, TypeVar, Callable, ForwardRef
 
@@ -63,6 +63,12 @@ class Simulator:
         
         return list(self.actors[component.__allviz_component_id__].items())
 
+    # This function return (actor, [components]) for all actors with at least one of the components
+    def quary_components(self, components: list[Type[T]]) -> list[tuple[int, list[Type[T]]]]:
+        pass
+
+    # This function return (actor, [components]) for all actors with all components
+    # TODO: High complexity
     def quary_components(self, components: list[Type[T]]) -> list[tuple[int, list[Type[T]]]]:
         def flatten(xss):
             return [x for xs in xss for x in xs]
@@ -91,7 +97,7 @@ class Simulator:
 
 # This decorator adds a uniqe int ID for each component
 def component(cls):
-    cls.__allviz_component_id__ = random.randint(0, 4_294_967_295)
+    cls.__allviz_component_id__ = uuid.uuid4()
     return cls
 
 # This decorator does add safety so only systems can be used in it

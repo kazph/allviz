@@ -1,6 +1,6 @@
 import random
 import itertools
-from typing import TypeVar, Callable, ForwardRef
+from typing import Type, TypeVar, Callable, ForwardRef
 
 # The simulator is the core of the model
 def create_simulator():
@@ -62,6 +62,32 @@ class Simulator:
             return []
         
         return list(self.actors[component.__allviz_component_id__].items())
+
+    def quary_components(self, components: list[Type[T]]) -> list[tuple[int, list[Type[T]]]]:
+        def flatten(xss):
+            return [x for xs in xss for x in xs]
+        all_actors = set(flatten([[x[0] for x in self.quary_component(c)] for c in components]))
+        
+        full = []
+        for c in components:
+            c_list = []
+            quary = self.quary_component(c)
+            
+            agent_components = self.actors[c.__allviz_component_id__]
+            for a in all_actors:
+                if a in agent_components:
+                    c_list.append(agent_components[a])
+                else:
+                    c_list.append(None)
+                
+            full.append(c_list)
+        
+        complete_noned = list(zip(all_actors, list(zip(*full))))
+        filtered_list = [
+            element for element in complete_noned if all(item is not None for item in element[1])
+        ]
+
+        return filtered_list
 
 # This decorator adds a uniqe int ID for each component
 def component(cls):

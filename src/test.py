@@ -9,18 +9,19 @@ def main():
 
     actor0 = simulator.create_actor()
     simulator.add_component(actor0, TestComponent, c)
+    # simulator.add_component(actor0, IdentificationComponent)
 
     actor1 = simulator.create_actor()
     simulator.add_component(actor1, TestComponent)
     simulator.add_component(actor1, IdentificationComponent)
 
+    actor2 = simulator.create_actor()
+    simulator.add_component(actor2, IdentificationComponent)
+
     simulator.add_system(printer)
     
-    res = simulator.quary_component(IdentificationComponent)
-
-    for a, c in res:
-        print(f"Agent: {a}, component: {c}")
-    
+    simulator.step()
+    simulator.step()
     simulator.step()
     simulator.step()
 
@@ -36,11 +37,10 @@ class IdentificationComponent:
 
 @allviz.system
 def printer(simultator: allviz.Simulator):
-    res = simultator.quary_component(TestComponent)
-    
-    res.sort(key=lambda x: x[1].number)
 
-    for a, c in res:
+    res = simultator.quary_components([TestComponent, IdentificationComponent])
+
+    for a, (c, i) in res:
         print(f"Agent: {a}, number: {c.number}")
         c.number += 1
 
